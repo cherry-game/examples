@@ -1,0 +1,77 @@
+{
+  "env": "dev",
+  "debug": true,
+  "print_level": "debug",
+  "include": [
+    "include/logger.json",
+    "include/demo-cluster.json",
+    "include/demo-data-config.json"
+  ],
+  "node": {
+    "web": [
+      {
+        "enable": true,
+        "node_id": "web-1",
+        "address": ":10820",
+        "__settings__": {
+          "maintain_state": 2,
+          "ref_logger": "game_log"
+        }
+      }
+    ],
+    "game": [
+      {
+        "enable": false,
+        "node_id": "game-1",
+        "address": ":10860",
+        "__settings__": {
+          "maintain_state": 2,
+          "db_id_list": {
+            "center_db_id": "center_db_1"
+          },
+          "ref_logger": "game_log"
+        }
+      }
+    ]
+  },
+  "db": {
+    "center_db_group": [
+      {
+        "enable": true,
+        "db_id": "center_db_1",
+        "dsn" : "",
+        "db_name": "dev_center",
+        "host": "127.0.0.1",
+        "user_name": "dev_user",
+        "password": "dev_password",
+        "max_idle_connect": 4,
+        "max_open_connect": 8,
+        "log_mode": true
+      }
+    ],
+    "game_db_group": [
+      {
+        "enable": true,
+        "db_id": "game_db_1",
+        "dsn" : "",
+        "db_name": "dev_game",
+        "host": "127.0.0.1",
+        "user_name": "dev_user",
+        "password": "dev_password",
+        "max_idle_connect": 4,
+        "max_open_connect": 8,
+        "log_mode": true
+      }
+    ]
+  },
+  "mongo": {
+    "center_db_group": [
+      {
+        "enable": true,
+        "db_id": "center_db_1",
+        "db_name": "dev_xgame_center",
+        "uri": "mongodb://user:pass@localhost/?%s"
+      }
+    ]
+  }
+}

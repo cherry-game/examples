@@ -1,0 +1,83 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name":"demo-chat",
+            "type":"go",
+            "request":"launch",
+            "mode":"debug",
+            "program":"${workspaceFolder}/demo_chat/room",
+            "console" :"integratedTerminal"
+        },
+        {
+            "name":"---------------",
+            "type":"go",
+            "request":"launch"
+        },
+        {
+            "name": "gc-master",
+            "type": "go",
+            "request": "launch",
+            "mode": "debug",
+            "program": "${workspaceFolder}/demo_cluster/nodes/main.go",
+            "console" :"integratedTerminal",
+            "args": [
+                "master",
+                "--path=../../config/demo-cluster.json",
+                "--node=gc-master"
+            ]
+        },
+        {
+            "name": "gc-center",
+            "type": "go",
+            "request": "launch",
+            "mode": "debug",
+            "program": "${workspaceFolder}/demo_cluster/nodes/main.go",
+            "console" :"integratedTerminal",
+            "args": [
+                "center",
+                "--path=../../config/demo-cluster.json",
+                "--node=gc-center"
+            ]
+        },
+        {
+            "name": "gc-web-1",
+            "type": "go",
+            "request": "launch",
+            "mode": "debug",
+            "program": "${workspaceFolder}/demo_cluster/nodes/main.go",
+            "console" :"integratedTerminal",
+            "args": [
+                "web",
+                "--path=../../config/demo-cluster.json",
+                "--node=gc-web-1"
+            ]
+        },
+        {
+            "name": "gc-gate-1",
+            "type": "go",
+            "request": "launch",
+            "mode": "debug",
+            "program": "${workspaceFolder}/demo_cluster/nodes/main.go",
+            "console" :"integratedTerminal",
+            "args": [
+                "gate",
+                "--path=../../config/demo-cluster.json",
+                "--node=gc-gate-1"
+            ]
+        },
+        {
+            "name": "gc-game-10001",
+            "type": "go",
+            "request": "launch",
+            "mode": "debug",
+            "program": "${workspaceFolder}/demo_cluster/nodes/main.go",
+            "console" :"integratedTerminal",
+            "args": [
+                "game",
+                "--path=../../config/demo-cluster.json",
+                "--node=10001"
+            ]
+        }
+    ]
+}
