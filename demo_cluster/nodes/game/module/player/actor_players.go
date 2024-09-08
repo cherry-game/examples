@@ -29,9 +29,6 @@ func (p *ActorPlayers) OnInit() {
 	p.Event().Register(event.PlayerLoginKey, p.onLoginEvent)
 	p.Event().Register(event.PlayerLogoutKey, p.onLogoutEvent)
 	p.Event().Register(event.PlayerCreateKey, p.onPlayerCreateEvent)
-	p.Remote().Register("checkChild", p.checkChild)
-
-	p.Timer().Add(1*time.Second, p.everySecondTimer)
 }
 
 func (p *ActorPlayers) OnFindChild(msg *cfacade.Message) (cfacade.IActor, bool) {
@@ -46,31 +43,6 @@ func (p *ActorPlayers) OnFindChild(msg *cfacade.Message) (cfacade.IActor, bool) 
 	}
 
 	return childActor, true
-}
-
-// cron
-func (p *ActorPlayers) everySecondTimer() {
-	p.Call(p.PathString(), "checkChild", nil)
-}
-
-func (p *ActorPlayers) checkChild() {
-	// 扫描所有玩家actor
-	p.Child().Each(func(iActor cfacade.IActor) {
-		child, ok := iActor.(*actorPlayer)
-		if !ok {
-			return
-		}
-
-		if child.isOnline {
-			return
-		}
-
-		// 玩家下线，并且超过childExitTime时间没有收发消息，则退出actor
-		deadline := time.Now().Add(-p.childExitTime).Unix()
-		if child.LastAt() < deadline {
-			child.Exit() //actor退出
-		}
-	})
 }
 
 // onLoginEvent 玩家登陆事件处理
