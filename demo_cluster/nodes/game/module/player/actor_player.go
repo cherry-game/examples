@@ -45,8 +45,7 @@ func (p *actorPlayer) sessionClose() {
 	p.isOnline = false
 	p.Exit()
 
-	logoutEvent := event.NewPlayerLogout(p.ActorID(), p.playerId)
-	p.PostEvent(&logoutEvent)
+	clog.Debugf("[actorPlayer] exit! uis = %d", p.uid)
 }
 
 // playerSelect 玩家查询角色列表
