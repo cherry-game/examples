@@ -187,7 +187,7 @@ func (p *Robot) ActorEnter() error {
 }
 
 func (p *Robot) RandSleep() {
-	time.Sleep(time.Duration(rand.Int31n(300)) * time.Millisecond)
+	time.Sleep(time.Duration(rand.Int31n(10)) * time.Millisecond)
 }
 
 func (p *Robot) Debug(args ...interface{}) {

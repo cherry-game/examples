@@ -6,9 +6,9 @@ import (
 	"sync"
 	"time"
 
-	cherryHttp "github.com/cherry-game/cherry/extend/http"
-	cherryTime "github.com/cherry-game/cherry/extend/time"
-	cherryLogger "github.com/cherry-game/cherry/logger"
+	chttp "github.com/cherry-game/cherry/extend/http"
+	ctime "github.com/cherry-game/cherry/extend/time"
+	clog "github.com/cherry-game/cherry/logger"
 	pomeloClient "github.com/cherry-game/cherry/net/parser/pomelo/client"
 	"github.com/cherry-game/examples/demo_cluster/internal/code"
 	jsoniter "github.com/json-iterator/go"
@@ -36,7 +36,7 @@ func main() {
 	RegisterDevAccount(url, accounts)
 
 	for userName, password := range accounts {
-		time.Sleep(time.Duration(rand.Int31n(2)) * time.Millisecond)
+		time.Sleep(time.Duration(rand.Int31n(10)) * time.Millisecond)
 		go RunRobot(url, pid, userName, password, addr, serverId, printLog)
 	}
 
@@ -52,20 +52,20 @@ func RegisterDevAccount(url string, accounts map[string]string) {
 			"password": val,
 		}
 
-		jsonBytes, _, err := cherryHttp.GET(requestURL, params)
+		jsonBytes, _, err := chttp.GET(requestURL, params)
 		if err != nil {
-			cherryLogger.Warn(err)
+			clog.Warn(err)
 			return
 		}
 
 		rsp := &code.Result{}
 		err = jsoniter.Unmarshal(jsonBytes, rsp)
 		if err != nil {
-			cherryLogger.Warn(err)
+			clog.Warn(err)
 			return
 		}
 
-		cherryLogger.Debugf("register account = %s, result = %+v", key, rsp)
+		clog.Debugf("register account = %s, result = %+v", key, rsp)
 	}
 }
 
@@ -82,18 +82,18 @@ func RunRobot(url, pid, userName, password, addr string, serverId int32, printLo
 
 	// 登录获取token
 	if err := cli.GetToken(url, pid, userName, password); err != nil {
-		cherryLogger.Error(err)
+		clog.Error(err)
 		return nil
 	}
 
 	// 根据地址连接网关
 	if err := cli.ConnectToTCP(addr); err != nil {
-		cherryLogger.Error(err)
+		clog.Error(err)
 		return nil
 	}
 
 	if cli.PrintLog {
-		cherryLogger.Infof("tcp connect %s is ok", addr)
+		clog.Infof("tcp connect %s is ok", addr)
 	}
 
 	// 随机休眠
@@ -102,12 +102,12 @@ func RunRobot(url, pid, userName, password, addr string, serverId int32, printLo
 	// 用户登录到游戏节点
 	err := cli.UserLogin(serverId)
 	if err != nil {
-		cherryLogger.Warn(err)
+		clog.Warn(err)
 		return nil
 	}
 
 	if cli.PrintLog {
-		cherryLogger.Infof("user login is ok. [user = %s, serverId = %d]", userName, serverId)
+		clog.Infof("user login is ok. [user = %s, serverId = %d]", userName, serverId)
 	}
 
 	//cli.RandSleep()
@@ -115,7 +115,7 @@ func RunRobot(url, pid, userName, password, addr string, serverId int32, printLo
 	// 查看是否有角色
 	err = cli.PlayerSelect()
 	if err != nil {
-		cherryLogger.Warn(err)
+		clog.Warn(err)
 		return nil
 	}
 
@@ -124,7 +124,7 @@ func RunRobot(url, pid, userName, password, addr string, serverId int32, printLo
 	// 创建角色
 	err = cli.ActorCreate()
 	if err != nil {
-		cherryLogger.Warn(err)
+		clog.Warn(err)
 		return nil
 	}
 
@@ -133,12 +133,12 @@ func RunRobot(url, pid, userName, password, addr string, serverId int32, printLo
 	// 角色进入游戏
 	err = cli.ActorEnter()
 	if err != nil {
-		cherryLogger.Warn(err)
+		clog.Warn(err)
 		return nil
 	}
 
-	elapsedTime := cli.StartTime.DiffInMillisecond(cherryTime.Now())
-	cherryLogger.Debugf("[%s] is enter to game. elapsed time:%dms", cli.TagName, elapsedTime)
+	elapsedTime := cli.StartTime.DiffInMillisecond(ctime.Now())
+	clog.Debugf("[%s] is enter to game. elapsed time:%dms", cli.TagName, elapsedTime)
 
 	//cli.Disconnect()
 
