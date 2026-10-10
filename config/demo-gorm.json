@@ -10,7 +10,7 @@
   "node": {
     "web": [
       {
-        "enable": true,
+        "enabled": true,
         "node_id": "web-1",
         "address": ":10820",
         "__settings__": {
@@ -21,7 +21,7 @@
     ],
     "game": [
       {
-        "enable": false,
+        "enabled": true,
         "node_id": "game-1",
         "address": ":10860",
         "__settings__": {
@@ -61,16 +61,6 @@
         "max_idle_connect": 4,
         "max_open_connect": 8,
         "log_mode": true
-      }
-    ]
-  },
-  "mongo": {
-    "center_db_group": [
-      {
-        "enable": true,
-        "db_id": "center_db_1",
-        "db_name": "dev_xgame_center",
-        "uri": "mongodb://user:pass@localhost/?%s"
       }
     ]
   }

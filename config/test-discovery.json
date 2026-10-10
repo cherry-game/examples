@@ -3,9 +3,9 @@
   "cluster": {
     "discovery": {
       "mode": "nats",
-      "@mode": "mode=default,从profile-{x}.json读取node节点的配置数据",
-      "@mode": "mode=nats,通过nats->master_node_id获取已注册的节点",
-      "@mode": "mode=etcd,通过etcd同步已注册节点"
+      "@mode1": "mode=default,从profile-{x}.json读取node节点的配置数据",
+      "@mode2": "mode=nats,通过nats->master_node_id获取已注册的节点",
+      "@mode3": "mode=etcd,通过etcd同步已注册节点"
     },
     "nats": {
       "master_node_id": "master-1",
@@ -25,7 +25,7 @@
         "__settings__": {
           "ref_logger": "master_log"
         },
-        "enable": true
+        "enabled": true
       }
     ],
     "game": [
@@ -39,7 +39,7 @@
           },
           "ref_logger": "game_log"
         },
-        "enable": true
+        "enabled": true
       },
       {
         "node_id": "game-2",
@@ -51,7 +51,7 @@
           },
           "ref_logger": "game_log"
         },
-        "enable": true
+        "enabled": true
       }
     ]
   },

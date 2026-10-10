@@ -1,9 +1,26 @@
+// 压测机器人: 用 Go 模拟大量客户端并发跑完整条登录链路。
+//
+// 它对理解整个 demo_cluster 很有用 —— 因为它把"一个真实客户端要做什么"按顺序写了一遍,
+// 而且用的是 cherry 自带的 pomelo 客户端(net/parser/pomelo/client), 走 tcp/protobuf 协议:
+//
+//  1. HTTP 调 web 节点的 /register 批量注册开发账号
+//  2. HTTP 调 /login 换取 token
+//  3. TCP 连 gate 节点(:10011), 发送 gate.user.login 完成"用户登录"
+//  4. 依次发送 game.player.select / create / enter 完成"角色登录"
+//
+// 全部跑完后进程不会退出, 会保持连接以便在 game 节点观察在线人数, 按 Ctrl+C 结束。
+//
+// 运行前需要先起好 master / center / web / gate / game 五个节点。
+// 机器人数量由下面的 maxRobotNum 控制, 首次试跑建议先改成几十个。
 package main
 
 import (
 	"fmt"
 	"math/rand"
+	"os"
+	"os/signal"
 	"sync"
+	"syscall"
 	"time"
 
 	chttp "github.com/cherry-game/cherry/extend/http"
@@ -23,23 +40,39 @@ var (
 )
 
 func main() {
-	wg := sync.WaitGroup{}
-	wg.Add(1)
-
+	// 准备账号名/密码对。示例里账号名和密码相同, 都是 test1/test2/...
 	accounts := make(map[string]string)
 	for i := 1; i <= maxRobotNum; i++ {
 		key := fmt.Sprintf("test%d", i)
 		accounts[key] = key
 	}
 
+	// 第 1 步: 到 web 节点批量注册开发账号(已存在的会返回"账号已存在", 不影响后续流程)
 	RegisterDevAccount(url, accounts)
 
+	// 每个机器人配对一个 Add/Done, 等全部进入游戏
+	wg := sync.WaitGroup{}
+
 	for userName, password := range accounts {
+		wg.Add(1)
+
+		go func(userName, password string) {
+			defer wg.Done()
+			RunRobot(url, pid, userName, password, addr, serverId, printLog)
+		}(userName, password)
+
 		time.Sleep(time.Duration(rand.Int31n(10)) * time.Millisecond)
-		go RunRobot(url, pid, userName, password, addr, serverId, printLog)
 	}
 
 	wg.Wait()
+	clog.Infof("all %d robots are in game. press Ctrl+C to exit.", len(accounts))
+
+	// 机器人连接需要保留, 便于在 game 节点观察 onlineCount, 因此等退出信号而不是直接结束。
+	// 原实现是 `wg.Add(1)` 之后从未调用 `wg.Done()` 的 WaitGroup,
+	// 靠计数永不为 0 来达到"永久阻塞"的效果: 语义不清, 且无法通过 Ctrl+C 优雅退出。
+	sig := make(chan os.Signal, 1)
+	signal.Notify(sig, os.Interrupt, syscall.SIGTERM)
+	<-sig
 }
 
 func RegisterDevAccount(url string, accounts map[string]string) {

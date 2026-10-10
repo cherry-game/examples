@@ -28,7 +28,7 @@
   "node": {
     "master": [
       {
-        "enable": true,
+        "enabled": true,
         "node_id": "chat-master",
         "address": "",
         "__settings__": {
@@ -38,7 +38,7 @@
     ],
     "room": [
       {
-        "enable": true,
+        "enabled": true,
         "node_id": "room-1",
         "address": ":34590",
         "__settings__": {
@@ -48,7 +48,7 @@
     ],
     "log": [
       {
-        "enable": true,
+        "enabled": true,
         "node_id": "log-1",
         "__settings__": {
           "ref_logger": "log_log"

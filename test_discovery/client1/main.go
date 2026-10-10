@@ -2,17 +2,17 @@ package main
 
 import (
 	"github.com/cherry-game/cherry"
-	cherryCluster "github.com/cherry-game/cherry/net/cluster"
 )
 
 func main() {
-	app := cherry.NewApp(
+	// 使用 cherry.Configure 创建应用: 它在 Startup 时会自动注册 cluster 与 discovery 组件,
+	// 节点启动后会向 master(master-1) 注册并拿到全部成员列表。
+	app := cherry.Configure(
 		"../config/test-discovery.json",
 		"game-1",
 		false,
 		cherry.Cluster,
 	)
-	app.Register(cherryCluster.New())
 
 	app.Startup()
 }

@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strings"
 	"testing"
 
 	cfacade "github.com/cherry-game/cherry/facade"
@@ -62,6 +63,9 @@ func TestGOB(t *testing.T) {
 func TestMessage(t *testing.T) {
 	gob.Register(context.TODO())
 	gob.Register(pomeloMessage.Message{})
+	// cherry v1.5+ 起 cfacade.Message.Args 由 []interface{} 改为 interface{}
+	// 以接口承载切片时, gob 需要显式注册切片的具体类型才能编解码
+	gob.Register([]interface{}{})
 
 	ctx := context.TODO()
 	msg := pomeloMessage.Message{
@@ -94,7 +98,15 @@ type FileAll struct {
 	Cxt  []byte
 }
 
+// Test111 是一个手动运行的小工具: 把一个文件go序列化后输出到stdout。
+// 它需要显式传入文件路径, 例如: go test -run Test111 ./test_gob -- myfile.txt
+// `go test ./test_gob` 时 go 命令会把自己的标志位(如 -test.testlogfile)当作第一个参数传进来,
+// 这里做一次校验, 没有传入真实文件路径时跳过, 避免误报失败。
 func Test111(t *testing.T) {
+	if len(os.Args) < 2 || strings.HasPrefix(os.Args[1], "-") {
+		t.Skip("需要传入文件路径, 例如: go test -run Test111 ./test_gob -- myfile.txt")
+	}
+
 	var fa1 FileAll
 	var err error
 	fa1.Name = os.Args[1]

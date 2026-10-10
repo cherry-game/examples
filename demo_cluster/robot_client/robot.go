@@ -138,7 +138,8 @@ func (p *Robot) ActorCreate() error {
 	}
 
 	route := "game.player.create"
-	gender := rand.Int31n(1)
+	// Int31n(n) 返回 [0,n), 写 1 会恒为 0, 所有机器人性别都一样; 2 才能取到 0/1
+	gender := rand.Int31n(2)
 
 	req := &pb.PlayerCreateRequest{
 		PlayerName: "p" + p.OpenId,

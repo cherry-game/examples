@@ -15,7 +15,7 @@ func main() {
 		PrintCaller:     false,
 	}
 
-	logger := cherryLogger.NewConfigLogger(config)
+	logger := cherryLogger.NewConfigLogger(*config, nil, nil)
 
 	logger.Info("111111111111111111111111111111")
 	logger.Debugf("aaaaaaaaaaaaaa %s", "aaaaa args.......")

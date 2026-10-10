@@ -49,7 +49,6 @@
             console.log("connected!");
 
             pomelo.on("onNewUser", onNewUser);
-            pomelo.on("onMembers", onMembers);
             pomelo.on("onBalance", onBalance);
 
             // request login
@@ -65,11 +64,6 @@
     function onNewUser(data) {
         console.log(data);
         pushMsg({name: 'system', content: data.content});
-    }
-
-    function onMembers(data) {
-        console.log(data);
-        pushMsg({name: 'system', content: "members: " + data.members});
     }
 
     function onBalance(data) {

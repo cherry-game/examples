@@ -19,7 +19,7 @@ func main() {
 	)
 
 	system := cherryActor.NewSystem()
-	system.SetApp(app)
+	system.Start(app)
 
 	parentActor := &actor{}
 	system.CreateActor(parentActor.AliasID(), parentActor)

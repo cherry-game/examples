@@ -7,3 +7,10 @@ logs/
 cherry/
 go.work
 go.work.sum
+.claude/
+
+# 本地运行时产生的日志(例如 3rd/nats-server 会把日志写在 exe 旁边)
+*.log
+
+# 个人的编辑器配置; .vscode/launch.json 是共享的调试配置, 不忽略
+.vscode/settings.json
